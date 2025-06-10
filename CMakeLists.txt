@@ -3,7 +3,7 @@ project(gol VERSION 0.1.0)
 
 add_compile_options(-g -Og)
 
-include_directories(include/)
+include_directories(include/ shader/)
 
 aux_source_directory(src SRC_FILES)
 
