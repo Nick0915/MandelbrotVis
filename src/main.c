@@ -9,11 +9,14 @@
 
 GLFWwindow* init_window();
 void cleanup(GLFWwindow* window);
+void process_input(GLFWwindow* window);
 
 int main() {
     GLFWwindow* window = init_window();
 
     while (!glfwWindowShouldClose(window)) {
+        process_input(window);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -49,14 +52,20 @@ GLFWwindow* init_window() {
     }
     glViewport(0, 0, 800, 600);
 
-    glfwSetKeyCallback(window, (GLFWkeyfun)key_callback);
-    printf("Window created\n");
+    glfwSetFramebufferSizeCallback(window, resize_callback);
+    glfwSetKeyCallback(window, key_callback);
 
+    printf("Window created\n");
     return window;
+}
+
+void process_input(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
 }
 
 void cleanup(GLFWwindow* window) {
     glfwDestroyWindow(window);
     glfwTerminate();
 }
-
