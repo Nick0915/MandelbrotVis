@@ -40,7 +40,7 @@ vec3 mandelbrot_color(vec2 c) {
     uint i;
     vec2 z = vec2(0.f, 0.f);
 
-    int max_iter = int(.25 / u_zoom + 100);
+    int max_iter = int(2 / u_zoom + 100);
 
     for (i = 0; i < max_iter; i++) {
         if (z.x * z.x + z.y * z.y > 4.f) { break; }

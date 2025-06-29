@@ -157,7 +157,7 @@ int32_t main() {
                 double actual_time = report_every - report_timer;
                 double fps = (double) num_frames_since_report / actual_time;
                 char* title;
-                asprintf(&title, "Game of Life (%.2f fps, %.10fx zoom)", fps, zoom);
+                asprintf(&title, "Mandelbrot (%.2f fps, %.10fx zoom)", fps, zoom);
                 glfwSetWindowTitle(window, title);
                 free(title);
 
@@ -244,7 +244,7 @@ GLFWwindow* init_window() {
 
     GLFWwindow* window = glfwCreateWindow(
         window_width, window_height,
-        "Game of Life",
+        "Mandelbrot",
         NULL, NULL
     );
     if (!window) {
@@ -261,7 +261,7 @@ GLFWwindow* init_window() {
     }
     glViewport(0, 0, window_width, window_height);
 
-    glfwSwapInterval(0);
+    // glfwSwapInterval(0);
 
     glfwSetFramebufferSizeCallback(window, resize_callback);
     glfwSetKeyCallback(window, key_callback);
