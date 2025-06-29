@@ -261,7 +261,7 @@ GLFWwindow* init_window() {
     }
     glViewport(0, 0, window_width, window_height);
 
-    // glfwSwapInterval(0);
+    glfwSwapInterval(0);
 
     glfwSetFramebufferSizeCallback(window, resize_callback);
     glfwSetKeyCallback(window, key_callback);

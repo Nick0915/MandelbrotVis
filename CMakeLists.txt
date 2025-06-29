@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(mandelbrot VERSION 0.1.0)
 
-add_compile_options(-g -Og)
+# add_compile_options(-g -Og)
+add_compile_options(-O3)
 
 include_directories(include/ shader/)
 
