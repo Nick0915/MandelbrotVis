@@ -11,8 +11,8 @@
 
 #include <callbacks.h>
 
-float window_width = 800.f;
-float window_height = 800.f;
+float window_width = 1000.f;
+float window_height = 1000.f;
 float zoom = 1.f;
 float x_off;
 float y_off;
