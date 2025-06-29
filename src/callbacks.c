@@ -48,8 +48,8 @@ void cursor_pos_callback(GLFWwindow* window, double x, double y) {
         float x_drag = mouse_x - drag_prev_x;
         float y_drag = mouse_y - drag_prev_y;
 
-        x_off -= x_drag; // / window_width;
-        y_off += y_drag; // / window_height;
+        x_off -= x_drag * zoom;
+        y_off += y_drag * zoom;
 
         drag_prev_x = mouse_x;
         drag_prev_y = mouse_y;

@@ -14,8 +14,8 @@
 float window_width = 800.f;
 float window_height = 600.f;
 float zoom = 1.f;
-float x_off = 0.f;
-float y_off = 0.f;
+float x_off;
+float y_off;
 
 uint32_t create_shader_program();
 GLFWwindow* init_window();
@@ -24,6 +24,9 @@ void cleanup(GLFWwindow* window, uint32_t shader_program);
 bool read_file(const char* filename, unsigned char **out_buffer, size_t* out_length);
 
 int32_t main() {
+    x_off = window_width / 2.f;
+    y_off = window_height / 2.f;
+
     GLFWwindow* window = init_window();
 
     // static float vertices[] = {
@@ -91,18 +94,16 @@ int32_t main() {
     }
 
     uint32_t shader_program;
-    uint32_t uni_loc_window_width, uni_loc_window_height, uni_loc_zoom, uni_loc_x_off, uni_loc_y_off;
+    uint32_t uni_loc_resolution, uni_loc_zoom, uni_loc_pan;
 
     // shader
     {
         shader_program = create_shader_program();
         glUseProgram(shader_program);
 
-        uni_loc_window_width = glGetUniformLocation(shader_program, "window_width");
-        uni_loc_window_height = glGetUniformLocation(shader_program, "window_height");
-        uni_loc_zoom = glGetUniformLocation(shader_program, "zoom");
-        uni_loc_x_off = glGetUniformLocation(shader_program, "x_off");
-        uni_loc_y_off = glGetUniformLocation(shader_program, "y_off");
+        uni_loc_resolution = glGetUniformLocation(shader_program, "u_resolution");
+        uni_loc_zoom = glGetUniformLocation(shader_program, "u_zoom");
+        uni_loc_pan = glGetUniformLocation(shader_program, "u_pan");
     }
 
     uint64_t frame_no = 0;
@@ -117,11 +118,9 @@ int32_t main() {
 
         // update uniformss
         {
-            glUniform1f(uni_loc_window_width, (float) window_width);
-            glUniform1f(uni_loc_window_height, (float) window_height);
+            glUniform2f(uni_loc_resolution, window_width, window_height);
+            glUniform2f(uni_loc_pan, x_off, y_off);
             glUniform1f(uni_loc_zoom, (float) zoom);
-            glUniform1f(uni_loc_x_off, (float) x_off);
-            glUniform1f(uni_loc_y_off, (float) y_off);
         }
 
         // render
