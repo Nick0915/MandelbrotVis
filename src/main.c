@@ -12,7 +12,7 @@
 #include <callbacks.h>
 
 float window_width = 800.f;
-float window_height = 600.f;
+float window_height = 800.f;
 float zoom = 1.f;
 float x_off;
 float y_off;
@@ -44,9 +44,15 @@ int32_t main() {
          1.f,  1.f,  1.f,  1.f, // 3: top-right pos, uv
     };
 
-    static uint32_t indices[] = {
-        0, 1, 2,    // bottom-left tri
-        2, 3, 0,    // top-right tri
+    // static uint8_t indices[] = {
+    //     0, 1, 2,    // bottom-left tri
+    //     2, 3, 0,    // top-right tri
+    // };
+
+    // GL_TRIANGLE_STRIP version
+    static uint8_t indices[] = {
+        1, 2, 0,    // bottom-left tri
+        3,          // top-right tri
     };
 
     uint32_t VAO, VBO, EBO;
@@ -109,7 +115,8 @@ int32_t main() {
     uint64_t frame_no = 0;
     double start_time = glfwGetTime();
     double last_frame_time = start_time;
-    double report_timer = 1.f;
+    double report_every = .25f;
+    double report_timer = report_every;
     uint64_t num_frames_since_report = 0;
 
     glClearColor(0.1f, 0.1f, 0.15f, 0.f);
@@ -118,50 +125,48 @@ int32_t main() {
 
         // update uniformss
         {
-            glUniform2f(uni_loc_resolution, window_width, window_height);
+            float scale_factor = (window_width < window_height) ? window_width : window_height;
+
+            glUniform2f(uni_loc_resolution, scale_factor, scale_factor);
             glUniform2f(uni_loc_pan, x_off, y_off);
             glUniform1f(uni_loc_zoom, (float) zoom);
         }
 
         // render
         {
-
             glClear(GL_COLOR_BUFFER_BIT);
 
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-            // glDrawArrays(GL_TRIANGLE_STRIP, 0, 5);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, 0);
+            glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+
+            glfwSwapBuffers(window);
         }
 
-        glfwSwapBuffers(window);
-        frame_no++;
-        num_frames_since_report++;
+        // framerate
+        {
+            frame_no++;
+            num_frames_since_report++;
 
-        double current_time = glfwGetTime();
-        double delay = current_time - last_frame_time;
-        report_timer -= delay;
+            double current_time = glfwGetTime();
+            double delay = current_time - last_frame_time;
+            report_timer -= delay;
 
-        if (report_timer < 0) {
-            double actual_time = 1.f - report_timer;
-            double fps = (double) num_frames_since_report / actual_time;
-            char* title;
-            asprintf(&title, "Game of Life (%.2f fps)", fps);
-            glfwSetWindowTitle(window, title);
-            free(title);
+            if (report_timer < 0) {
+                double actual_time = report_every - report_timer;
+                double fps = (double) num_frames_since_report / actual_time;
+                char* title;
+                asprintf(&title, "Game of Life (%.2f fps, %.10fx zoom)", fps, zoom);
+                glfwSetWindowTitle(window, title);
+                free(title);
 
-            num_frames_since_report = 0;
-            report_timer = 1.f;
+                num_frames_since_report = 0;
+                report_timer = report_every;
+            }
+            last_frame_time = current_time;
         }
 
-        // if (frame_no % report_every == 0) {
-        //     char* title;
-        //     asprintf(&title, "Game of Life (%.2f fps)", 1.f / delay);
-        //     glfwSetWindowTitle(window, title);
-        //     free(title);
-        // }
-
-        last_frame_time = current_time;
         glfwPollEvents();
     }
 
@@ -254,7 +259,7 @@ GLFWwindow* init_window() {
         fprintf(stderr, "Couldn't load GLAD!\n");
         exit(-1);
     }
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, window_width, window_height);
 
     glfwSwapInterval(0);
 
@@ -264,7 +269,7 @@ GLFWwindow* init_window() {
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetCursorPosCallback(window, cursor_pos_callback);
 
-    printf("Window created\n");
+    // printf("Window created\n");
     return window;
 }
 

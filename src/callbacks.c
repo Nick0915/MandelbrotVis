@@ -1,16 +1,14 @@
 #include <inttypes.h>
 #include <stdio.h>
+#include <math.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <callbacks.h>
+#include <util.h>
 
-typedef uint8_t bool;
-
-#define ZOOM_AMT ((float) 0.1f)
-#define true ((bool) 0xFF)
-#define false ((bool) 0x00)
+#define ZOOM_AMT ((float) 0.9f)
 
 extern float window_width;
 extern float window_height;
@@ -34,10 +32,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void scroll_callback(GLFWwindow* window, double x, double y) {
     // printf("scrolled %.3lf\n", y);
-    zoom -= ZOOM_AMT * (float) y;
-    if (zoom <= 0.1f) {
-        zoom = 0.1f;
-    }
+    zoom *= pow(ZOOM_AMT, y);
+    // zoom -= ZOOM_AMT * (float) y;
+    // if (zoom <= 0.1f) {
+    //     zoom = 0.1f;
+    // }
 }
 
 void cursor_pos_callback(GLFWwindow* window, double x, double y) {

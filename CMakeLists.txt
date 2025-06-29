@@ -9,4 +9,4 @@ aux_source_directory(src SRC_FILES)
 
 add_executable(gol ${SRC_FILES})
 
-target_link_libraries(gol glfw)
+target_link_libraries(gol glfw m)
